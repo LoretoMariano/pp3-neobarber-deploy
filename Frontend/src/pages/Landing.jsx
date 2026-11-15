@@ -4,7 +4,7 @@ import { obtenerSesion } from "../auth.js";
 import { obtenerBarberos } from "../services/turnosService.js";
 
 // Completá estos datos con los de tu barbería. Los precios son de ejemplo.
-const DATOS = { direccion: "Completar dirección, Ciudad", telefono: "Completar teléfono" };
+const DATOS = { direccion: "Avenida Corrientes 2026", telefono: "11 2345 6789" };
 const SERVICIOS = [
   { nombre: "Corte de cabello", detalle: "Lavado, corte a tijera o máquina y terminación a navaja.", duracion: "40 min", precio: "$12.000" },
   { nombre: "Corte y barba", detalle: "Corte completo más arreglo de barba con toalla caliente.", duracion: "1 h 10 min", precio: "$17.000" },
@@ -91,7 +91,7 @@ export default function Landing() {
       </section>
 
       <section className="seccion" id="equipo">
-        <p className="etiqueta">— El equipo</p>
+        <p className="etiqueta">— Staff</p>
         <h2>Las manos detrás del oficio.</h2>
         <ul className="equipo">
           {equipo.map((b) => (
@@ -105,7 +105,7 @@ export default function Landing() {
       </section>
 
       <section className="seccion contacto" id="contacto">
-        <p className="etiqueta">— Pasá por la casa</p>
+        <p className="etiqueta">— Conocénos</p>
         <h2>Te esperamos de lunes a sábado.</h2>
         <dl>
           <div><dt>Horarios</dt><dd>Lunes a sábado, 10:00 a 19:00<br />Domingo cerrado</dd></div>
