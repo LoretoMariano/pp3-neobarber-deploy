@@ -1,0 +1,31 @@
+@startuml
+title Alta de Empleado - Barbería
+
+actor Admin
+participant "Frontend\n(web-admin)" as Front
+participant "API Empleados" as APIE
+database "BDD Empleados" as BDDE
+
+Admin -> Front : Completa nombre, apellido\ny cargo del empleado
+
+note right of Front
+  JWT obtenido
+  durante Login
+end note
+
+Front -> APIE : POST /api/empleados\n{nombre, apellido, cargo}\nBearer JWT
+activate APIE
+
+alt Datos válidos
+    APIE -> BDDE : INSERT INTO empleados\n(nombre, apellido, cargo)\nVALUES (?, ?, ?)
+    BDDE --> APIE : Empleado creado (id)
+    APIE --> Front : 201 Created\n{id, nombre, apellido, cargo}
+    Front --> Admin : Empleado dado de alta
+else Datos incompletos o inválidos
+    note over APIE : Falta nombre, apellido o cargo
+    APIE --> Front : 400 Bad Request\nDatos incompletos
+    Front --> Admin : Complete todos los campos
+end
+
+deactivate APIE
+@enduml

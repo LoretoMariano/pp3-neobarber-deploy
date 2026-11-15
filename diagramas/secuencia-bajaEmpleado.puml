@@ -1,0 +1,42 @@
+@startuml
+title Baja de Empleado - Barbería
+
+actor Admin
+participant "Frontend\n(web-admin)" as Front
+participant "API Empleados" as APIE
+database "BDD Empleados" as BDDE
+participant "API Turnos" as APIT
+database "BDD Turnos" as BDDT
+
+Admin -> Front : Selecciona empleado\ny confirma la baja
+
+note right of Front
+  JWT obtenido
+  durante Login
+end note
+
+Front -> APIE : DELETE /api/empleados/{id}\nBearer JWT
+activate APIE
+
+APIE -> BDDE : SELECT id, nombre, apellido, cargo\nFROM empleados\nWHERE id=?
+BDDE --> APIE : Empleado encontrado\n(id, nombre, apellido, cargo)
+
+APIE -> APIT : GET /api/turnos/barbero/{id}\n?estado=reservado
+activate APIT
+APIT -> BDDT : SELECT * FROM turnos\nWHERE barbero_id=?\nAND estado='reservado'\nAND fecha >= CURRENT_DATE
+BDDT --> APIT : Lista de turnos
+APIT --> APIE : 200 OK (lista de turnos)
+deactivate APIT
+
+alt No tiene turnos pendientes
+    APIE -> BDDE : DELETE FROM empleados\nWHERE id=?
+    BDDE --> APIE : Empleado eliminado
+    APIE --> Front : 200 OK\nEmpleado eliminado
+    Front --> Admin : Empleado dado de baja
+else Tiene turnos pendientes (caso fallido)
+    APIE --> Front : 409 Conflict\nEmpleado con turnos pendientes
+    Front --> Admin : No se puede eliminar:\nreasigne o cancele sus turnos
+end
+
+deactivate APIE
+@enduml
